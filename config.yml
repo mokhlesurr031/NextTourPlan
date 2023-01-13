@@ -1,0 +1,8 @@
+clever_cloud_db:
+  POSTGRESQL_ADDON_DB: br5b1cpgdywf45dq1hla
+  POSTGRESQL_ADDON_HOST: br5b1cpgdywf45dq1hla-postgresql.services.clever-cloud.com
+  POSTGRESQL_ADDON_PASSWORD: PN86q8SK6svMECTQ3eX8uf2gQ1s82E
+  POSTGRESQL_ADDON_PORT: 5432
+  POSTGRESQL_ADDON_URI: postgresql://ud40ud3jkpulmlxnk4t4:PN86q8SK6svMECTQ3eX8uf2gQ1s82E@br5b1cpgdywf45dq1hla-postgresql.services.clever-cloud.com:5432/br5b1cpgdywf45dq1hla
+  POSTGRESQL_ADDON_USER: ud40ud3jkpulmlxnk4t4
+  POSTGRESQL_ADDON_VERSION: 11
