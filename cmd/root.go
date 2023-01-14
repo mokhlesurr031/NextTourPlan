@@ -8,9 +8,9 @@ import (
 
 var (
 	// cfgFile store the configuration file name
-	cfgFile                 string
-	verbose, prettyPrintLog bool
-	rootCmd                 = &cobra.Command{
+	//cfgFile                 string
+	//verbose, prettyPrintLog bool
+	rootCmd = &cobra.Command{
 		Use:   "tour",
 		Short: "Tour Plan Backend Server",
 		Long:  `Tour Plan Backend Server`,
