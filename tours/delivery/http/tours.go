@@ -16,7 +16,7 @@ func NewHTTPHandler(r *chi.Mux, planForTourUseCase domain.PlanForTourUseCase) {
 	handler := &PlanForTourHandler{
 		PlanForTourUseCase: planForTourUseCase,
 	}
-	r.Route("/tours", func(r chi.Router) {
+	r.Route("/api/tours", func(r chi.Router) {
 		r.Post("/post", handler.Post)
 		r.Get("/list", handler.List)
 	})
