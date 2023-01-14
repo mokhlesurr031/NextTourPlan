@@ -40,7 +40,7 @@ func Connect(cfg *config.Database) error {
 	db = d
 
 	//AutoMigrate
-	if err := db.AutoMigrate(&domain.PlanForTour{}); err != nil {
+	if err := db.AutoMigrate(&domain.PlanForTour{}, &domain.SignUpInput{}); err != nil {
 		log.Fatalln(err)
 	}
 
