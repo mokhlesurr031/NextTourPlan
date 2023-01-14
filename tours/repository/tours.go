@@ -24,3 +24,16 @@ func (c *TourSqlStorage) Post(ctx context.Context, tour *domain.PlanForTour) err
 
 	return nil
 }
+
+func (c *TourSqlStorage) List(ctx context.Context, ctr *domain.PlanForTourCriteria) ([]*domain.PlanForTour, error) {
+	qry := c.db
+
+	toursList := make([]*domain.PlanForTour, 0)
+	if err := qry.WithContext(ctx).Find(&toursList).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return toursList, nil
+}

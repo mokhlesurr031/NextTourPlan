@@ -18,6 +18,7 @@ func NewHTTPHandler(r *chi.Mux, planForTourUseCase domain.PlanForTourUseCase) {
 	}
 	r.Route("/tours", func(r chi.Router) {
 		r.Post("/post", handler.Post)
+		r.Get("/list", handler.List)
 	})
 }
 
@@ -35,5 +36,19 @@ func (t *PlanForTourHandler) Post(w http.ResponseWriter, r *http.Request) {
 	tour := domain.PlanForTour(req.PlanForTour)
 	if err := t.PlanForTourUseCase.Post(ctx, &tour); err != nil {
 		log.Println(err)
+	}
+}
+
+func (t *PlanForTourHandler) List(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("content-type", "application/json")
+	ctx := r.Context()
+	tours := &domain.PlanForTourCriteria{}
+	toursList, err := t.PlanForTourUseCase.List(ctx, tours)
+	if err != nil {
+		log.Println(err)
+	}
+	er := json.NewEncoder(w).Encode(toursList)
+	if err != nil {
+		log.Println(er)
 	}
 }

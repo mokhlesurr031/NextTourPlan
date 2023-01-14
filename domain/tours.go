@@ -57,8 +57,10 @@ type PlanForTourCriteria struct {
 
 type PlanForTourRepository interface {
 	Post(ctx context.Context, ctr *PlanForTour) error
+	List(ctx context.Context, ctr *PlanForTourCriteria) ([]*PlanForTour, error)
 }
 
 type PlanForTourUseCase interface {
 	Post(ctx context.Context, ctr *PlanForTour) error
+	List(ctx context.Context, ctr *PlanForTourCriteria) ([]*PlanForTour, error)
 }

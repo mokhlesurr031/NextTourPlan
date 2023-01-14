@@ -21,3 +21,7 @@ func (c *PlanForTourUseCase) Post(ctx context.Context, ctr *domain.PlanForTour) 
 	fmt.Println(ctx, ctr)
 	return c.repo.Post(ctx, ctr)
 }
+
+func (c *PlanForTourUseCase) List(ctx context.Context, ctr *domain.PlanForTourCriteria) ([]*domain.PlanForTour, error) {
+	return c.repo.List(ctx, ctr)
+}

@@ -1,7 +1,6 @@
 package template
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/NextTourPlan/domain"
 	"github.com/NextTourPlan/internal/conn"
@@ -15,30 +14,27 @@ import (
 func NewHTTPHandler(r *chi.Mux) {
 
 	r.Route("/tours", func(r chi.Router) {
-		r.Get("/post/template", Post)
-		r.Post("/post/template", Post)
+		r.Get("/", Post)
+		r.Post("/", Post)
+		r.Get("/list", Get)
 	})
-}
-
-type ReqPlanForTour struct {
-	domain.PlanForTour
 }
 
 func Post(w http.ResponseWriter, r *http.Request) {
 	db := conn.DefaultDB()
-	closeDB, _ := db.DB()
-	defer func(closeDB *sql.DB) {
-		err := closeDB.Close()
-		if err != nil {
-			log.Println(err)
-		}
-	}(closeDB)
+	//closeDB, _ := db.DB()
+	//defer func(closeDB *sql.DB) {
+	//	err := closeDB.Close()
+	//	if err != nil {
+	//		log.Println(err)
+	//	}
+	//}(closeDB)
 
 	if r.Method == "GET" {
-		t, _ := template.ParseFiles("template/tours/tours.gtpl")
+		t, _ := template.ParseFiles("template/tours/create.html")
 		err := t.Execute(w, nil)
 		if err != nil {
-			return
+			log.Println(err)
 		}
 	}
 
@@ -66,6 +62,29 @@ func Post(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(req)
 
 	} else {
-		http.Redirect(w, r, "/post/template/submit", http.StatusFound)
+		http.Redirect(w, r, "/", http.StatusFound)
+	}
+}
+
+func Get(w http.ResponseWriter, r *http.Request) {
+	db := conn.DefaultDB()
+	//closeDB, _ := db.DB()
+	//defer func(closeDB *sql.DB) {
+	//	err := closeDB.Close()
+	//	if err != nil {
+	//		log.Println(err)
+	//	}
+	//}(closeDB)
+	if r.Method == "GET" {
+		req := []domain.PlanForTour{}
+		if err := db.Find(&req).Error; err != nil {
+			log.Println(err)
+		}
+
+		t, _ := template.ParseFiles("template/tours/list.html")
+		err := t.Execute(w, req)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }
