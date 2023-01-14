@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/NextTourPlan/internal/conn"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/spf13/cobra"
 	"log"
 	"net/http"
@@ -53,6 +55,17 @@ func server(cmd *cobra.Command, args []string) {
 
 func buildHTTP(_ *cobra.Command, _ []string) *http.Server {
 	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Use(cors.Handler(cors.Options{
+		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"https://*", "http://*"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 
 	db := conn.DefaultDB()
 	_ = db

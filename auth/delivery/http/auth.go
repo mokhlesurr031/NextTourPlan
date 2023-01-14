@@ -31,7 +31,7 @@ type ReqSignIn struct {
 }
 
 func (a *AuthHandler) PostSignUP(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("content-type", "application/json")
+	w.Header().Set("Content-Type", "application/json")
 	req := ReqSignUp{}
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		log.Println(err)
