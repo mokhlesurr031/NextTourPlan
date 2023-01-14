@@ -25,3 +25,21 @@ func (c *PlanForTourUseCase) Post(ctx context.Context, ctr *domain.PlanForTour) 
 func (c *PlanForTourUseCase) List(ctx context.Context, ctr *domain.PlanForTourCriteria) ([]*domain.PlanForTour, error) {
 	return c.repo.List(ctx, ctr)
 }
+
+func (c *PlanForTourUseCase) Spots(ctx context.Context, ctr *domain.TourSpots) error {
+	fmt.Println(ctx, ctr)
+	return c.repo.Spots(ctx, ctr)
+}
+
+func (c *PlanForTourUseCase) SpotsList(ctx context.Context, ctr *domain.TourSpotsCriteria) ([]*domain.TourSpots, error) {
+	return c.repo.SpotsList(ctx, ctr)
+}
+
+func (c *PlanForTourUseCase) Meals(ctx context.Context, ctr *domain.Meals) error {
+	fmt.Println(ctx, ctr)
+	return c.repo.Meals(ctx, ctr)
+}
+
+func (c *PlanForTourUseCase) MealsList(ctx context.Context, ctr *domain.MealsCriteria) ([]*domain.Meals, error) {
+	return c.repo.MealsList(ctx, ctr)
+}

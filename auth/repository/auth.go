@@ -62,7 +62,14 @@ func (a *AuthSqlStorage) PostSignIn(ctx context.Context, ctr *domain.SignInInput
 			log.Println(err)
 		}
 
-		reqJwt := &dto.JWTToken{Secret: token, MaxAge: jwt.MaxAge, ExpiredIn: jwt.ExpiredIn, Message: "success"}
+		loggedInData := &dto.LoggerInUserData{}
+		loggedInData.FullName = user.FullName
+		loggedInData.Email = user.Email
+		loggedInData.Address = user.Address
+		loggedInData.Contact = user.Contact
+		loggedInData.Rating = user.Rating
+
+		reqJwt := &dto.JWTToken{User: loggedInData, Secret: token, MaxAge: jwt.MaxAge, ExpiredIn: jwt.ExpiredIn, Message: "success"}
 		return reqJwt, nil
 	}
 
