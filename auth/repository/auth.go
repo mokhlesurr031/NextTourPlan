@@ -20,7 +20,7 @@ type AuthSqlStorage struct {
 	db *gorm.DB
 }
 
-func (a *AuthSqlStorage) PostSignUP(ctx context.Context, ctr *domain.SignUpInput) error {
+func (a *AuthSqlStorage) PostSignUP(ctx context.Context, ctr *domain.SignUpInput) string {
 	db := a.db
 	if ctr.Password != ctr.PasswordConfirm {
 		log.Println("Password Doesnt Match")
@@ -31,9 +31,33 @@ func (a *AuthSqlStorage) PostSignUP(ctx context.Context, ctr *domain.SignUpInput
 	}
 	ctr.Password = hashedPassword
 	ctr.PasswordConfirm = hashedPassword
+
+	user := domain.SignUpInput{}
+
+	if ctr.Email != "" && ctr.Contact != "" {
+		//Check if email already exists
+		mail := db.First(&user, "email=?", ctr.Email)
+		cred := &domain.SignUpInput{}
+		if err := mail.WithContext(ctx).Take(cred).Error; err != nil {
+			log.Println(err)
+		}
+		if cred.Email != "" {
+			return "email already exists"
+		}
+
+		//Check if contact already exists
+		contact := db.First(&user, "contact=?", ctr.Contact)
+		if err := contact.WithContext(ctx).Take(cred).Error; err != nil {
+			log.Println(err)
+		}
+		if cred.Email != "" {
+			return "contact already exists"
+		}
+	}
+
 	db.Create(ctr)
 
-	return nil
+	return "success"
 }
 
 func (a *AuthSqlStorage) PostSignIn(ctx context.Context, ctr *domain.SignInInput) (*dto.JWTToken, error) {
@@ -68,6 +92,7 @@ func (a *AuthSqlStorage) PostSignIn(ctx context.Context, ctr *domain.SignInInput
 		loggedInData.Address = user.Address
 		loggedInData.Contact = user.Contact
 		loggedInData.Rating = user.Rating
+		loggedInData.ID = user.ID
 
 		reqJwt := &dto.JWTToken{User: loggedInData, Secret: token, MaxAge: jwt.MaxAge, ExpiredIn: jwt.ExpiredIn, Message: "success"}
 		return reqJwt, nil

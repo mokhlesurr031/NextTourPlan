@@ -39,8 +39,11 @@ func (a *AuthHandler) PostSignUP(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 	signup := domain.SignUpInput(req.SignUpInput)
-	if err := a.AuthUseCase.PostSignUp(ctx, &signup); err != nil {
-		log.Println(err)
+	res := a.AuthUseCase.PostSignUp(ctx, &signup)
+
+	er := json.NewEncoder(w).Encode(res)
+	if er != nil {
+		log.Println(er)
 	}
 }
 

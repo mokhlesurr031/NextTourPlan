@@ -26,11 +26,11 @@ type SignInInput struct {
 }
 
 type AuthRepository interface {
-	PostSignUP(ctx context.Context, ctr *SignUpInput) error
+	PostSignUP(ctx context.Context, ctr *SignUpInput) string
 	PostSignIn(ctx context.Context, ctr *SignInInput) (*dto.JWTToken, error)
 }
 
 type AuthUseCase interface {
-	PostSignUp(ctx context.Context, ctr *SignUpInput) error
+	PostSignUp(ctx context.Context, ctr *SignUpInput) string
 	PostSignIn(ctx context.Context, ctr *SignInInput) (*dto.JWTToken, error)
 }
