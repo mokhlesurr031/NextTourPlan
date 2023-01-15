@@ -5,6 +5,7 @@ import (
 )
 
 type LoggerInUserData struct {
+	ID       uint   `json:"id"`
 	FullName string `json:"full_name"`
 	Contact  string `json:"contact"`
 	Address  string `json:"address"`

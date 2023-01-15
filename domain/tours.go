@@ -49,7 +49,7 @@ type PlanForTour struct {
 	DayCount       string    `json:"day_count"`
 	StartingAt     string    `json:"starting_at"`
 	CostPerHead    string    `json:"cost_per_head"`
-	CreatedBy      uint      `json:"created_by"`
+	CreatedBy      string    `json:"created_by"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }
@@ -62,7 +62,7 @@ type PlanForTourCriteria struct {
 	DayCount       *string    `json:"day_count"`
 	StartingAt     *string    `json:"starting_at"`
 	CostPerHead    *string    `json:"cost_per_head"`
-	CreatedBy      *uint      `json:"created_by"`
+	CreatedBy      *string    `json:"created_by"`
 	CreatedAt      *time.Time `json:"created_at"`
 	UpdatedAt      *time.Time `json:"updated_at"`
 }

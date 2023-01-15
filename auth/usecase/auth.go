@@ -17,7 +17,7 @@ type AuthUseCase struct {
 	repo domain.AuthRepository
 }
 
-func (a *AuthUseCase) PostSignUp(ctx context.Context, ctr *domain.SignUpInput) error {
+func (a *AuthUseCase) PostSignUp(ctx context.Context, ctr *domain.SignUpInput) string {
 	return a.repo.PostSignUP(ctx, ctr)
 }
 
