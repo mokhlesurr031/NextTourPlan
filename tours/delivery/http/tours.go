@@ -6,6 +6,7 @@ import (
 	"github.com/go-chi/chi"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type PlanForTourHandler struct {
@@ -19,6 +20,7 @@ func NewHTTPHandler(r *chi.Mux, planForTourUseCase domain.PlanForTourUseCase) {
 	r.Route("/api/tours", func(r chi.Router) {
 		r.Post("/post", handler.Post)
 		r.Get("/list", handler.List)
+		r.Get("/{id}", handler.Get)
 
 		r.Post("/spots", handler.Spots)
 		r.Get("/spots/list", handler.SpotsList)
@@ -82,6 +84,24 @@ func (t *PlanForTourHandler) List(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println(er)
 	}
+}
+
+func (c *PlanForTourHandler) Get(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("content-type", "application/json")
+	_id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		log.Println(err)
+	}
+	id := uint(_id)
+	ctx := r.Context()
+	tour := &domain.PlanForTourCriteria{}
+	tour.ID = &id
+
+	tourData, err := c.PlanForTourUseCase.Get(ctx, tour)
+	if err != nil {
+		log.Println(err)
+	}
+	json.NewEncoder(w).Encode(tourData)
 }
 
 type ReqTourSpots struct {

@@ -26,6 +26,10 @@ func (c *PlanForTourUseCase) List(ctx context.Context, ctr *domain.PlanForTourCr
 	return c.repo.List(ctx, ctr)
 }
 
+func (c *PlanForTourUseCase) Get(ctx context.Context, ctr *domain.PlanForTourCriteria) (*domain.PlanForTour, error) {
+	return c.repo.Get(ctx, ctr)
+}
+
 func (c *PlanForTourUseCase) Spots(ctx context.Context, ctr *domain.TourSpots) error {
 	fmt.Println(ctx, ctr)
 	return c.repo.Spots(ctx, ctr)

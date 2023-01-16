@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/NextTourPlan/domain"
 	"gorm.io/gorm"
+	"log"
 )
 
 // New return Category SQL(MySQL/PostgreSQL) storage implementation
@@ -35,6 +36,18 @@ func (c *TourSqlStorage) List(ctx context.Context, ctr *domain.PlanForTourCriter
 		return nil, err
 	}
 	return toursList, nil
+}
+
+func (c *TourSqlStorage) Get(ctx context.Context, ctr *domain.PlanForTourCriteria) (*domain.PlanForTour, error) {
+	qry := c.db
+	if ctr.ID != nil {
+		qry = qry.Where("id", ctr.ID)
+	}
+	tour := &domain.PlanForTour{}
+	if err := qry.WithContext(ctx).Take(tour).Error; err != nil {
+		log.Println(err)
+	}
+	return tour, nil
 }
 
 func (c *TourSqlStorage) Spots(ctx context.Context, spots *domain.TourSpots) error {
