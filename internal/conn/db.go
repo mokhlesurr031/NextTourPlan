@@ -40,8 +40,13 @@ func Connect(cfg *config.Database) error {
 	db = d
 
 	//AutoMigrate
-	if err := db.AutoMigrate(&domain.PlanForTour{}, &domain.SignUpInput{}, &domain.Meals{}, &domain.TourSpots{}); err != nil {
-		log.Fatalln(err)
+
+	makeMigration := Migrate()
+
+	if makeMigration {
+		if err := db.AutoMigrate(&domain.PlanForTour{}, &domain.SignUpInput{}, &domain.Meals{}, &domain.TourSpots{}, &domain.ImagesUploader{}); err != nil {
+			log.Fatalln(err)
+		}
 	}
 
 	sqlDB, err := db.DB()

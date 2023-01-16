@@ -6,18 +6,16 @@ import (
 )
 
 type TourSpots struct {
-	ID     uint   `json:"id"`
-	TourID uint   `json:"tour_id"`
-	Name   string `json:"name"`
-	//Images      []*multipart.FileHeader `json:"images"`
+	ID          uint   `json:"id"`
+	TourID      uint   `json:"tour_id"`
+	Name        string `json:"name"`
 	Description string `json:"description"`
 }
 
 type TourSpotsCriteria struct {
-	ID     *uint   `json:"id"`
-	TourID *uint   `json:"tour_id"`
-	Name   *string `json:"name"`
-	//Images      []*multipart.FileHeader `json:"images"`
+	ID          *uint   `json:"id"`
+	TourID      *uint   `json:"tour_id"`
+	Name        *string `json:"name"`
 	Description *string `json:"description"`
 }
 
