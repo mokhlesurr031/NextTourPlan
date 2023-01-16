@@ -19,6 +19,8 @@ import (
 	_authHttp "github.com/NextTourPlan/auth/delivery/http"
 	_authRepository "github.com/NextTourPlan/auth/repository"
 	_authUseCase "github.com/NextTourPlan/auth/usecase"
+
+	_uploadHandler "github.com/NextTourPlan/uploader"
 )
 
 // serveCmd represents the serve command
@@ -77,6 +79,8 @@ func buildHTTP(_ *cobra.Command, _ []string) *http.Server {
 	authRepo := _authRepository.New(db)
 	authUsecase := _authUseCase.New(authRepo)
 	_authHttp.NewHTTPHandler(r, authUsecase)
+
+	_uploadHandler.NewHTTPHandler(r)
 
 	return &http.Server{
 		Addr:    fmt.Sprintf(":%d", 8081),
