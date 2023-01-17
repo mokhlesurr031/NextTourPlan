@@ -10,6 +10,7 @@ type TourSpots struct {
 	TourID      uint   `json:"tour_id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	Message     string `json:"message"`
 }
 
 type TourSpotsCriteria struct {
@@ -17,6 +18,7 @@ type TourSpotsCriteria struct {
 	TourID      *uint   `json:"tour_id"`
 	Name        *string `json:"name"`
 	Description *string `json:"description"`
+	Message     *string `json:"message"`
 }
 
 type Meals struct {
@@ -27,6 +29,7 @@ type Meals struct {
 	Dinner    string `json:"dinner"`
 	Snacks    string `json:"snacks"`
 	Others    string `json:"others"`
+	Message   string `json:"message"`
 }
 
 type MealsCriteria struct {
@@ -37,6 +40,7 @@ type MealsCriteria struct {
 	Dinner    *string `json:"dinner"`
 	Snacks    *string `json:"snacks"`
 	Others    *string `json:"others"`
+	Message   *string `json:"message"`
 }
 
 type PlanForTour struct {
@@ -48,6 +52,7 @@ type PlanForTour struct {
 	StartingAt     string    `json:"starting_at"`
 	CostPerHead    string    `json:"cost_per_head"`
 	CreatedBy      string    `json:"created_by"`
+	Message        string    `json:"message"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 }
@@ -61,14 +66,29 @@ type PlanForTourCriteria struct {
 	StartingAt     *string    `json:"starting_at"`
 	CostPerHead    *string    `json:"cost_per_head"`
 	CreatedBy      *string    `json:"created_by"`
+	Message        *string    `json:"message"`
 	CreatedAt      *time.Time `json:"created_at"`
 	UpdatedAt      *time.Time `json:"updated_at"`
+}
+
+type TourDetails struct {
+	PlanForTour *PlanForTour
+	TourSpots   *[]TourSpots
+	TourImages  *[]ImagesUploader
+	Meals       *Meals
+}
+
+type TourDetailsCriteria struct {
+	PlanForTour *PlanForTour
+	TourSpots   *[]TourSpots
+	TourImages  *[]ImagesUploader
+	Meals       *Meals
 }
 
 type PlanForTourRepository interface {
 	Post(ctx context.Context, ctr *PlanForTour) error
 	List(ctx context.Context, ctr *PlanForTourCriteria) ([]*PlanForTour, error)
-	Get(ctx context.Context, ctr *PlanForTourCriteria) (*PlanForTour, error)
+	Get(ctx context.Context, ctr *PlanForTourCriteria) (*TourDetails, error)
 
 	Spots(ctx context.Context, ctr *TourSpots) error
 	SpotsList(ctx context.Context, ctr *TourSpotsCriteria) ([]*TourSpots, error)
@@ -80,7 +100,7 @@ type PlanForTourRepository interface {
 type PlanForTourUseCase interface {
 	Post(ctx context.Context, ctr *PlanForTour) error
 	List(ctx context.Context, ctr *PlanForTourCriteria) ([]*PlanForTour, error)
-	Get(ctx context.Context, ctr *PlanForTourCriteria) (*PlanForTour, error)
+	Get(ctx context.Context, ctr *PlanForTourCriteria) (*TourDetails, error)
 
 	Spots(ctx context.Context, ctr *TourSpots) error
 	SpotsList(ctx context.Context, ctr *TourSpotsCriteria) ([]*TourSpots, error)

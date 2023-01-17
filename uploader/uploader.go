@@ -8,6 +8,7 @@ import (
 	"github.com/NextTourPlan/internal/conn"
 	"github.com/go-chi/chi"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -30,7 +31,7 @@ func storeLocally(file multipart.File, filePath string, fileName string) error {
 	// Create a new file to store the image
 	f, err := os.Create(filePath + fileName)
 	if err != nil {
-		fmt.Println("ERROR", err)
+		log.Println(err)
 	}
 	defer f.Close()
 	_, err = io.Copy(f, file)
@@ -80,8 +81,7 @@ func uploadSpotImgHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "Upload failed!")
 	}
-	files, _, _ := r.FormFile("images")
-
+	files, handler, _ := r.FormFile("images")
 	userID := r.FormValue("user_id")
 	userIDUint, err := strconv.ParseUint(userID, 10, 64)
 	if err != nil {
@@ -103,8 +103,9 @@ func uploadSpotImgHandler(w http.ResponseWriter, r *http.Request) {
 		_, _ = fmt.Fprintf(w, "Upload failed!")
 	}
 
+	//fileNameExt := "tours_uid" + userID + "_did" + domainID + "_tid" + tourID + "_sid" + spotID
+	fileName := handler.Filename
 	filePath := "./img/upload/tours/"
-	fileName := "tours_uid" + userID + "_did" + domainID + "_tid" + tourID + "_sid" + spotID + ".jpg"
 
 	er := storeLocally(files, filePath, fileName)
 	if er != nil {
@@ -121,8 +122,6 @@ func uploadSpotImgHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSpotImgHandler(w http.ResponseWriter, r *http.Request) {
-	//vars := mux.Vars(r)
-	//imageName := vars["imageName"]
 	file, _ := os.Open("./img/upload/tours/tours_uid1_did1_tid1_sid2.jpg")
 	defer func(file *os.File) {
 		err := file.Close()
