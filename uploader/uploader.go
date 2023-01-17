@@ -1,6 +1,8 @@
 package uploader
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/NextTourPlan/domain"
 	"github.com/NextTourPlan/internal/conn"
@@ -24,67 +26,104 @@ type ImgData struct {
 	ImgURl   string
 }
 
+func storeLocally(file multipart.File, filePath string, fileName string) error {
+	// Create a new file to store the image
+	f, err := os.Create(filePath + fileName)
+	if err != nil {
+		fmt.Println("ERROR", err)
+	}
+	defer f.Close()
+	_, err = io.Copy(f, file)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func storeRemote(file multipart.File, fileName string) string {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+	part, _ := writer.CreateFormFile("fileName", fileName)
+	io.Copy(part, file)
+	writer.Close()
+
+	// Create a new HTTP request
+	req, _ := http.NewRequest("POST", "https://api.upload.io/v2/accounts/12a1xvh/uploads/form_data", body)
+	req.Header.Add("Content-Type", writer.FormDataContentType())
+	req.Header.Add("Authorization", "Bearer public_12a1xvh6D2kN8NT8fAZpvmG9sxvZ")
+
+	// Send the request
+	client := &http.Client{}
+	resp, _ := client.Do(req)
+	defer resp.Body.Close()
+
+	type Response struct {
+		Files []struct {
+			FormDataFieldName string `json:"formDataFieldName"`
+			AccountId         string `json:"accountId"`
+			FilePath          string `json:"filePath"`
+			FileUrl           string `json:"fileUrl"`
+		} `json:"files"`
+	}
+	var r Response
+	// Print the response
+	json.NewDecoder(resp.Body).Decode(&r)
+
+	imgUrl := r.Files[0].FileUrl
+
+	return imgUrl
+}
+
 func uploadSpotImgHandler(w http.ResponseWriter, r *http.Request) {
 	db := conn.DefaultDB()
 	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
-		return
+		_, _ = fmt.Fprintf(w, "Upload failed!")
 	}
-	files := r.MultipartForm.File["images"]
+	files, _, _ := r.FormFile("images")
+
+	userID := r.FormValue("user_id")
+	userIDUint, err := strconv.ParseUint(userID, 10, 64)
+	if err != nil {
+		_, _ = fmt.Fprintf(w, "Upload failed!")
+	}
 	domainID := r.FormValue("domain_id")
 	domainIDUint, err := strconv.ParseUint(domainID, 10, 64)
 	if err != nil {
-		return
+		_, _ = fmt.Fprintf(w, "Upload failed!")
 	}
-
 	spotID := r.FormValue("spot_id")
 	spotIDUint, err := strconv.ParseUint(spotID, 10, 64)
 	if err != nil {
-		return
+		_, _ = fmt.Fprintf(w, "Upload failed!")
 	}
-
 	tourID := r.FormValue("tour_id")
 	tourIDUint, err := strconv.ParseUint(tourID, 10, 64)
 	if err != nil {
-		return
+		_, _ = fmt.Fprintf(w, "Upload failed!")
 	}
 
-	for _, f := range files {
-		file, _ := f.Open()
-		defer func(file multipart.File) {
-			err := file.Close()
-			if err != nil {
-				return
-			}
-		}(file)
-		out, _ := os.Create("./img/upload/tours/tours_" + f.Filename)
+	filePath := "./img/upload/tours/"
+	fileName := "tours_uid" + userID + "_did" + domainID + "_tid" + tourID + "_sid" + spotID + ".jpg"
 
-		fmt.Println("FileName", f.Filename)
-
-		defer func(out *os.File) {
-			err := out.Close()
-			if err != nil {
-				return
-			}
-		}(out)
-		_, err := io.Copy(out, file)
-		if err != nil {
-			return
-		}
-		data := &domain.ImagesUploader{DomainID: uint(domainIDUint), ImgPath: "tours_" + f.Filename, SpotID: uint(spotIDUint), TourID: uint(tourIDUint)}
-		db.Create(&data)
+	er := storeLocally(files, filePath, fileName)
+	if er != nil {
+		_, _ = fmt.Fprintf(w, "Upload failed!")
 	}
 
-	_, err = fmt.Fprintf(w, "Upload complete!")
-	if err != nil {
-		return
-	}
+	imgUrlRemote := storeRemote(files, fileName)
+
+	data := &domain.ImagesUploader{DomainID: uint(domainIDUint), ImgURLRemote: imgUrlRemote, ImgURLLocal: filePath + fileName, SpotID: uint(spotIDUint), TourID: uint(tourIDUint), UserID: uint(userIDUint)}
+	db.Create(&data)
+
+	_, _ = fmt.Fprintf(w, "Upload complete!")
+
 }
 
 func getSpotImgHandler(w http.ResponseWriter, r *http.Request) {
 	//vars := mux.Vars(r)
 	//imageName := vars["imageName"]
-	file, _ := os.Open("./img/upload/tours/" + "tours_271713555_3182650491970063_2216618754507835589_n.jpg")
+	file, _ := os.Open("./img/upload/tours/tours_uid1_did1_tid1_sid2.jpg")
 	defer func(file *os.File) {
 		err := file.Close()
 		if err != nil {
