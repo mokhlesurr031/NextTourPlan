@@ -15,8 +15,18 @@ clever_cloud_db:
   POSTGRESQL_ADDON_USER: ud40ud3jkpulmlxnk4t4
   POSTGRESQL_ADDON_VERSION: 11
 
+neon_db:
+  POSTGRESQL_ADDON_DB: neondb
+  POSTGRESQL_ADDON_HOST: ep-gentle-sky-364428.ap-southeast-1.aws.neon.tech
+  POSTGRESQL_ADDON_PASSWORD: jfNMrAnGiF94
+  POSTGRESQL_ADDON_PORT: 5432
+  POSTGRESQL_ADDON_URI: postgres://mokhlesurr031@ep-gentle-sky-364428.ap-southeast-1.aws.neon.tech/neondb
+  POSTGRESQL_ADDON_USER: mokhlesurr031
+  POSTGRESQL_ADDON_VERSION: 15
+
+
 current_db:
-  RUNNING: docker_database
+  RUNNING: neon_db
 
 
 image_uploader_upload_io:
