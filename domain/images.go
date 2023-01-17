@@ -10,6 +10,7 @@ type ImagesUploader struct {
 	DomainID     uint      `json:"domain_id"`
 	TourID       uint      `json:"tour_id"`
 	SpotID       uint      `json:"spot_id"`
+	Message      string    `json:"message"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }

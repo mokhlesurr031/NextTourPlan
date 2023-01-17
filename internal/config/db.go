@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 	"log"
 )
@@ -31,11 +32,15 @@ func loadDB() {
 	if er != nil {
 		log.Println(er)
 	}
+
+	currentDB := viper.GetString("current_db.RUNNING")
+
+	fmt.Println("CurrentDB", currentDB)
 	db = Database{
-		Name:     viper.GetString("clever_cloud_db.POSTGRESQL_ADDON_DB"),
-		Username: viper.GetString("clever_cloud_db.POSTGRESQL_ADDON_USER"),
-		Password: viper.GetString("clever_cloud_db.POSTGRESQL_ADDON_PASSWORD"),
-		Host:     viper.GetString("clever_cloud_db.POSTGRESQL_ADDON_HOST"),
-		Port:     viper.GetInt("clever_cloud_db.POSTGRESQL_ADDON_PORT"),
+		Name:     viper.GetString(currentDB + ".POSTGRESQL_ADDON_DB"),
+		Username: viper.GetString(currentDB + ".POSTGRESQL_ADDON_USER"),
+		Password: viper.GetString(currentDB + ".POSTGRESQL_ADDON_PASSWORD"),
+		Host:     viper.GetString(currentDB + ".POSTGRESQL_ADDON_HOST"),
+		Port:     viper.GetInt(currentDB + ".POSTGRESQL_ADDON_PORT"),
 	}
 }

@@ -1,3 +1,11 @@
+docker_database:
+  POSTGRESQL_ADDON_HOST: localhost
+  POSTGRESQL_ADDON_PORT: 5432
+  POSTGRESQL_ADDON_DB: nexttourplan
+  POSTGRESQL_ADDON_USER: admin
+  POSTGRESQL_ADDON_PASSWORD: secret
+
+
 clever_cloud_db:
   POSTGRESQL_ADDON_DB: br5b1cpgdywf45dq1hla
   POSTGRESQL_ADDON_HOST: br5b1cpgdywf45dq1hla-postgresql.services.clever-cloud.com
@@ -6,3 +14,15 @@ clever_cloud_db:
   POSTGRESQL_ADDON_URI: postgresql://ud40ud3jkpulmlxnk4t4:PN86q8SK6svMECTQ3eX8uf2gQ1s82E@br5b1cpgdywf45dq1hla-postgresql.services.clever-cloud.com:5432/br5b1cpgdywf45dq1hla
   POSTGRESQL_ADDON_USER: ud40ud3jkpulmlxnk4t4
   POSTGRESQL_ADDON_VERSION: 11
+
+current_db:
+  RUNNING: docker_database
+
+
+image_uploader_upload_io:
+  BEARER_TOKEN: public_12a1xvh6D2kN8NT8fAZpvmG9sxvZ
+  ACCOUNT_ID: 12a1xvh
+  API_URL: https://api.upload.io/v2/accounts/12a1xvh/uploads/form_data
+
+image_url_local:
+  LOCAL_STORAGE_IMG_PATH: ./img/upload/tours/

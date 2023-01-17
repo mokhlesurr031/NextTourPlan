@@ -2,9 +2,9 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"github.com/NextTourPlan/domain"
 	"gorm.io/gorm"
-	"log"
 )
 
 // New return Category SQL(MySQL/PostgreSQL) storage implementation
@@ -38,16 +38,46 @@ func (c *TourSqlStorage) List(ctx context.Context, ctr *domain.PlanForTourCriter
 	return toursList, nil
 }
 
-func (c *TourSqlStorage) Get(ctx context.Context, ctr *domain.PlanForTourCriteria) (*domain.PlanForTour, error) {
+func (c *TourSqlStorage) Get(ctx context.Context, ctr *domain.PlanForTourCriteria) (*domain.TourDetails, error) {
 	qry := c.db
+	notFound := "not found"
+	tourDetails := &domain.TourDetails{}
 	if ctr.ID != nil {
-		qry = qry.Where("id", ctr.ID)
+		tour := &domain.PlanForTour{}
+		err := qry.First(&tour, "id=?", ctr.ID).Error
+		if err != nil {
+			tour.Message = notFound
+		}
+
+		spotList := []domain.TourSpots{}
+		er := qry.Where("tour_id=?", ctr.ID).Find(&spotList)
+
+		fmt.Println("SPOTLIST", spotList)
+		if er != nil {
+			spotList = append(spotList, domain.TourSpots{Message: notFound})
+		}
+
+		imgList := []domain.ImagesUploader{}
+		e := qry.Where("tour_id=?", ctr.ID).Find(&imgList)
+		if e != nil {
+			imgList = append(imgList, domain.ImagesUploader{Message: notFound})
+		}
+
+		mealList := domain.Meals{}
+		errr := qry.First("tour_id?", ctr.ID).Error
+		if errr != nil {
+			mealList.Message = notFound
+		}
+
+		tourDetails.PlanForTour = tour
+		tourDetails.TourSpots = &spotList
+		tourDetails.Meals = &mealList
+		tourDetails.TourImages = &imgList
+
+		return tourDetails, nil
 	}
-	tour := &domain.PlanForTour{}
-	if err := qry.WithContext(ctx).Take(tour).Error; err != nil {
-		log.Println(err)
-	}
-	return tour, nil
+	return tourDetails, nil
+
 }
 
 func (c *TourSqlStorage) Spots(ctx context.Context, spots *domain.TourSpots) error {
