@@ -4,6 +4,7 @@ import "time"
 
 type ImagesUploader struct {
 	ID        uint      `json:"id"`
+	UserID    uint      `json:"user_id"`
 	ImgPath   string    `json:"img_path"`
 	DomainID  uint      `json:"domain_id"`
 	TourID    uint      `json:"tour_id"`
