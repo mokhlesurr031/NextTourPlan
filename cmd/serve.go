@@ -59,9 +59,7 @@ func buildHTTP(_ *cobra.Command, _ []string) *http.Server {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(cors.Handler(cors.Options{
-		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"https://*", "http://*"},
-		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedOrigins:   []string{"https://*", "http://*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
@@ -83,7 +81,7 @@ func buildHTTP(_ *cobra.Command, _ []string) *http.Server {
 	_uploadHandler.NewHTTPHandler(r)
 
 	return &http.Server{
-		Addr:    fmt.Sprintf(":%d", 8081),
+		Addr:    fmt.Sprintf("0.0.0.0:%d", 8081),
 		Handler: r,
 	}
 }
